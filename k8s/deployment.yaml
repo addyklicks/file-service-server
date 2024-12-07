@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-service
+  template:
+    metadata:
+      labels:
+        app: file-service
+    spec:
+      containers:
+      - name: file-service
+        image: spring-boot-file-service:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CELONIS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: file-service-secrets
+              key: apiKey
+        volumeMounts:
+        - name: file-storage
+          mountPath: /tmp/uploads
+      volumes:
+      - name: file-storage
+        persistentVolumeClaim:
+          claimName: file-service-pvc
