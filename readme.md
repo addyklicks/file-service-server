@@ -105,6 +105,22 @@ Configure the application using `application.properties`:
 - `celonis.api-key`: API key for authentication
 - `file.storage.path`: Directory for file storage
 
+## Expected Outputs
+
+1. **Local Deployment**:
+   - Application runs on `http://localhost:8080`.
+   - Files can be uploaded and downloaded via API endpoints.
+
+2. **Docker Deployment**:
+   - Runs the application in a container accessible on `http://localhost:8080`.
+
+3. **Kubernetes Deployment**:
+   - The application is deployed as pods in the cluster, accessible via the Ingress endpoint.
+   - Persistent volumes ensure file data is retained across restarts.
+
+
+
+
 ## Production Improvements and Scalability
 
 To make the application fully production-ready, the following enhancements have been identified:
@@ -157,16 +173,3 @@ Managing multiple instances (realms) of the application across cloud providers p
    - Centralize logging with tools like Fluentd and ELK Stack for easier analysis and troubleshooting.
 
 ---
-
-## Expected Outputs
-
-1. **Local Deployment**:
-   - Application runs on `http://localhost:8080`.
-   - Files can be uploaded and downloaded via API endpoints.
-
-2. **Docker Deployment**:
-   - Runs the application in a container accessible on `http://localhost:8080`.
-
-3. **Kubernetes Deployment**:
-   - The application is deployed as pods in the cluster, accessible via the Ingress endpoint.
-   - Persistent volumes ensure file data is retained across restarts.
