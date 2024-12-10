@@ -105,94 +105,68 @@ Configure the application using `application.properties`:
 - `celonis.api-key`: API key for authentication
 - `file.storage.path`: Directory for file storage
 
-## Multi-Realm Deployment Challenges and Solutions
+## Production Improvements and Scalability
 
-### Context
-
-At Celonis, we operate multiple instances (realms) of our Execution Management System (EMS) globally, spanning different cloud providers. This introduces unique challenges in maintaining and deploying services efficiently.
-
-### Challenges and Strategies
-
-#### 1. Environment-Specific Configurations
-
-**Problem:** Each realm requires unique configurations for:
-- Database hosts
-- Connectivity settings
-- API endpoints
-
-**Solution:**
-- Implement Infrastructure as Code (IaC)
-- Use centralized configuration management
-- Leverage Kubernetes ConfigMaps
-
-#### 2. Consistency Across Realms
-
-**Problem:** Maintaining consistent application versions and configurations
-
-**Solution:**
-- Robust CI/CD pipeline
-- Kubernetes namespaces
-- Standardized deployment processes
-
-#### 3. Scaling and Monitoring
-
-**Problem:** Managing application performance across multiple cloud providers
-
-**Solution:**
-- Multi-cloud monitoring solutions
-- Centralized dashboards
-- Auto-scaling policies
-
-## Recommended Improvements
+To make the application fully production-ready, the following enhancements have been identified:
 
 ### Security Enhancements
-- Kubernetes Secrets management
-- OAuth2/JWT authentication
-- HTTPS support with Ingress TLS
+- **Secrets Management**: Use Kubernetes Secrets to manage sensitive data like the API key securely.
+- **Authentication & Authorization**: Implement OAuth2 or JWT for more robust security.
+- **HTTPS Support**: Use TLS termination in Ingress to ensure secure communication.
 
-### Scalability
-- Horizontal Pod Autoscaling (HPA)
-- Readiness and Liveness Probes
-- Zero-Downtime Deployments
+### Scalability and Reliability
+- **Horizontal Pod Autoscaling (HPA)**: Configure Kubernetes HPA to auto-scale application pods based on resource usage.
+- **Readiness and Liveness Probes**: Add health checks in `deployment.yaml` to monitor pod health and availability.
+- **Zero-Downtime Deployments**: Use `RollingUpdate` strategy in Kubernetes to prevent disruptions during deployments.
 
-### Monitoring
-- Centralized logging (ELK Stack)
-- Prometheus and Grafana integration
+### Monitoring and Logging
+- **Centralized Logging**: Use solutions like ELK (Elasticsearch, Logstash, and Kibana) for analyzing application logs.
+- **Metrics and Alerts**: Integrate monitoring tools like Prometheus and Grafana for resource metrics and alerting.
 
 ### Data Persistence
-- Persistent Volume Claims (PVCs)
-- Cloud storage backup strategies
+- **Persistent Volume Claims (PVCs)**: Ensure file data is stored on durable volumes across pod restarts.
+- **Backup Strategy**: Schedule regular backups to external storage like AWS S3 or Google Cloud Storage.
 
-## Performance Considerations
-
-- Lightweight JRE runtime
-- Efficient file handling
-- Containerized for consistent performance
-- Kubernetes-ready for horizontal scaling
-
-## Potential Future Enhancements
-
-1. Advanced authentication mechanisms
-2. Comprehensive logging and monitoring
-3. Multi-cloud deployment strategies
-4. Enhanced error handling
-5. Database metadata integration
-
-## Contributing
-
-Contributions are welcome! Please:
-- Fork the repository
-- Create a feature branch
-- Submit a pull request
-
-## License
-
-MIT License - See [LICENSE](LICENSE) for details
-
-## Contact
-
-For inquiries, please open an issue on the GitHub repository.
+### Code Improvements
+- **Environment Configurations**: Use ConfigMaps or Spring Profiles for environment-specific settings.
+- **Error Handling**: Improve exception handling for better client responses and debugging.
 
 ---
 
-*Designed for scalable, secure, and efficient file management*
+## Challenges and Multi-Realm Pipeline Design
+
+### Challenges in Multi-Realm Deployments
+Managing multiple instances (realms) of the application across cloud providers presents the following challenges:
+
+1. **Environment-Specific Configurations**: Different realms require unique database hosts and service configurations.
+2. **Consistency Across Realms**: Ensuring consistent application versions and configurations across environments.
+3. **Scaling and Monitoring**: Scaling resources and monitoring performance across clouds.
+
+### Solution for Multi-Realm Deployment
+
+1. **Centralized CI/CD Pipeline**
+   - Implement a unified CI/CD pipeline with modular stages for build, test, and deployment.
+   - Use environment-specific branches or parameters for custom deployments.
+
+2. **Configuration Management**
+   - Store configuration files in a secure repository and dynamically inject them during deployment.
+   - Use Kubernetes Secrets and ConfigMaps for managing environment-specific settings.
+
+3. **Observability**
+   - Use monitoring tools like Prometheus and Grafana with centralized dashboards for all realms.
+   - Centralize logging with tools like Fluentd and ELK Stack for easier analysis and troubleshooting.
+
+---
+
+## Expected Outputs
+
+1. **Local Deployment**:
+   - Application runs on `http://localhost:8080`.
+   - Files can be uploaded and downloaded via API endpoints.
+
+2. **Docker Deployment**:
+   - Runs the application in a container accessible on `http://localhost:8080`.
+
+3. **Kubernetes Deployment**:
+   - The application is deployed as pods in the cluster, accessible via the Ingress endpoint.
+   - Persistent volumes ensure file data is retained across restarts.
