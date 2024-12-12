@@ -136,7 +136,6 @@ To make the application fully production-ready, the following enhancements have 
 ### Scalability and Reliability
 - **Horizontal Pod Autoscaling (HPA)**: Configure Kubernetes HPA to auto-scale application pods based on resource usage.
 - **Readiness and Liveness Probes**: Add health checks in `deployment.yaml` to monitor pod health and availability.
-- **Hard-Coding RollingUpdate**: In the current setup, Rolling Update is the default update strategy in Kubernetes deployments, it is explicitly configured in the deployment.yaml file of the project. Kubernetes deployments inherently use the RollingUpdate strategy unless otherwise specified..
 - **Zero-Downtime Deployments**: Use `RollingUpdate` strategy in Kubernetes to prevent disruptions during deployments.
 
 ### Monitoring and Logging
@@ -158,7 +157,7 @@ To make the application fully production-ready, the following enhancements have 
 We have implemented several features to align with production-ready standards:
 
 1. **Zero-Downtime Deployment**:
-   - RollingUpdate strategy is configured in the Kubernetes deployment manifest.
+   - RollingUpdate strategy is configured in the Kubernetes deployment manifest. In the current setup, Rolling Update is the default update strategy in Kubernetes deployments, it is explicitly configured in the deployment.yaml file of the project. Kubernetes deployments inherently use the RollingUpdate strategy unless otherwise specified.
 
 2. **Data Persistence**:
    - PersistentVolumeClaim is configured in `pvc.yaml` to ensure data persistence across pod restarts.
