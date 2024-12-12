@@ -30,30 +30,25 @@ Key components of the project:
 - **`build.gradle.kts`**: Gradle build configuration
 - **Kubernetes Manifests**: Deployment, Service, and Ingress configurations
 
-## Getting Started
+## Deployment Steps
 
-### 1. Clone the Repository
+### 1. Build the Application
 
-```bash
-git clone https://github.com/addyklicks/file-service-server.git
-cd file-service-server
-```
-
-### 2. Local Development
-
-#### Build the Application
+Use the Gradle wrapper to clean and build the project:
 
 ```bash
 ./gradlew clean build
 ```
 
-#### Run the Application Locally
+### 2. Run Locally
+
+Start the application locally:
 
 ```bash
 ./gradlew bootRun
 ```
 
-The application starts on port 8080 by default.
+The application will run on `http://localhost:8080` by default.
 
 ### 3. Docker Deployment
 
@@ -76,7 +71,12 @@ docker run -p 8080:8080 --name file-service-container file-service:1.0
 ```bash
 kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/service.yaml
+kubectl apply -f k8s/ingress.yaml
 ```
+
+The application will be accessible via the Ingress controller.
+
+---
 
 ## API Endpoints
 
@@ -98,12 +98,16 @@ curl -X POST -H "Celonis-Auth: your_api_key" -F file=@/path/to/file http://local
 curl -O http://localhost:8080/files/your_filename
 ```
 
+---
+
 ## Configuration
 
 Configure the application using `application.properties`:
 
 - `celonis.api-key`: API key for authentication
 - `file.storage.path`: Directory for file storage
+
+---
 
 ## Expected Outputs
 
@@ -118,8 +122,7 @@ Configure the application using `application.properties`:
    - The application is deployed as pods in the cluster, accessible via the Ingress endpoint.
    - Persistent volumes ensure file data is retained across restarts.
 
-
-
+---
 
 ## Production Improvements and Scalability
 
@@ -133,6 +136,7 @@ To make the application fully production-ready, the following enhancements have 
 ### Scalability and Reliability
 - **Horizontal Pod Autoscaling (HPA)**: Configure Kubernetes HPA to auto-scale application pods based on resource usage.
 - **Readiness and Liveness Probes**: Add health checks in `deployment.yaml` to monitor pod health and availability.
+- **Hard-Coding RollingUpdate**: In the current setup, Rolling Update is the default update strategy in Kubernetes deployments, it is explicitly configured in the deployment.yaml file of the project. Kubernetes deployments inherently use the RollingUpdate strategy unless otherwise specified..
 - **Zero-Downtime Deployments**: Use `RollingUpdate` strategy in Kubernetes to prevent disruptions during deployments.
 
 ### Monitoring and Logging
@@ -149,27 +153,39 @@ To make the application fully production-ready, the following enhancements have 
 
 ---
 
-## Challenges and Multi-Realm Pipeline Design
+## Key Implementations for Task 3: Improvements
 
-### Challenges in Multi-Realm Deployments
-Managing multiple instances (realms) of the application across cloud providers presents the following challenges:
+We have implemented several features to align with production-ready standards:
 
-1. **Environment-Specific Configurations**: Different realms require unique database hosts and service configurations.
-2. **Consistency Across Realms**: Ensuring consistent application versions and configurations across environments.
-3. **Scaling and Monitoring**: Scaling resources and monitoring performance across clouds.
+1. **Zero-Downtime Deployment**:
+   - RollingUpdate strategy is configured in the Kubernetes deployment manifest.
 
-### Solution for Multi-Realm Deployment
+2. **Data Persistence**:
+   - PersistentVolumeClaim is configured in `pvc.yaml` to ensure data persistence across pod restarts.
 
-1. **Centralized CI/CD Pipeline**
-   - Implement a unified CI/CD pipeline with modular stages for build, test, and deployment.
-   - Use environment-specific branches or parameters for custom deployments.
-
-2. **Configuration Management**
-   - Store configuration files in a secure repository and dynamically inject them during deployment.
-   - Use Kubernetes Secrets and ConfigMaps for managing environment-specific settings.
-
-3. **Observability**
-   - Use monitoring tools like Prometheus and Grafana with centralized dashboards for all realms.
-   - Centralize logging with tools like Fluentd and ELK Stack for easier analysis and troubleshooting.
+3. **Ingress Controller**:
+   - The application is exposed via Ingress, providing flexibility for domain-based routing and HTTPS support.
 
 ---
+
+## Multi-Realm Deployment Challenges and Solution
+
+### Challenges
+- **Environment-Specific Configurations**: Different database hosts and external service configurations for each realm.
+- **Consistency Across Realms**: Ensuring the same application versions and configurations across realms.
+- **Scaling and Monitoring**: Managing performance and scaling for diverse cloud environments.
+
+### Solution
+
+1. **Centralized CI/CD Pipeline**:
+   - Unified CI/CD with modular stages for environment-specific configurations.
+
+2. **Configuration Management**:
+   - Store configuration files in a secure repository and inject them dynamically during deployment.
+
+3. **Observability**:
+   - Use Prometheus and Grafana for centralized monitoring.
+   - Employ Fluentd and ELK Stack for logging across realms.
+
+---
+
